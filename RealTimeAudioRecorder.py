@@ -4,6 +4,10 @@ import threading
 import sys
 import os.path
 
+# Problème d'installation de différentes lib
+# pb d'utilisation de pulsaudio
+# tester lib soundcard, picovoice, sounddevice & soundfile
+
 # Audio recording parameters
 FORMAT = pyaudio.paInt16 # 16-bit resolution
 CHANNELS = 2             # 2: Stereo, 1: Mono
@@ -29,7 +33,7 @@ def record_audio():
 
     # Open stream
     stream = audio.open(format=FORMAT,
-                        input_device_index=None, # device ID or None for default
+                        input_device_index=11, # device ID or None for default
                         channels=CHANNELS,
                         rate=RATE,
                         input=True,
@@ -53,7 +57,7 @@ def record_audio():
             wf.setframerate(RATE)
             wf.writeframes(b''.join(buffer_frames))
 
-        print("Recorded  and saved buffer", bufferId)
+        print("Recorded and saved buffer", bufferId)
         bufferId += 1
 
     print("Recording stopped.")
