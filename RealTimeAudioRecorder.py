@@ -1,4 +1,4 @@
-import pyaudio
+import pyaudiowpatch as pyaudio
 import wave
 import threading
 import sys
@@ -31,24 +31,59 @@ def record_audio():
     # Initialize PyAudio
     audio = pyaudio.PyAudio()
 
+    try:
+        # Get default WASAPI info
+        wasapi_info = audio.get_host_api_info_by_type(pyaudio.paWASAPI)
+    except OSError:
+        exit()
+
+    # Get default WASAPI speakers
+    default_speakers = audio.get_device_info_by_index(wasapi_info["defaultOutputDevice"])
+    
+    if not default_speakers["isLoopbackDevice"]:
+        for loopback in audio.get_loopback_device_info_generator():
+            """
+            Try to find loopback device with same name(and [Loopback suffix]).
+            Unfortunately, this is the most adequate way at the moment.
+            """
+            if default_speakers["name"] in loopback["name"]:
+                default_speakers = loopback
+                break
+        else:
+            print("No compatible speaker found")
+            exit()
+
     # Open stream
     stream = audio.open(format=FORMAT,
-                        input_device_index=11, # device ID or None for default
-                        channels=CHANNELS,
-                        rate=RATE,
+                        input_device_index=default_speakers["index"], # device ID or None for default
+                        channels=default_speakers["maxInputChannels"],
+                        rate=int(default_speakers["defaultSampleRate"]),
                         input=True,
-                        frames_per_buffer=CHUNK)
+                        frames_per_buffer=CHUNK
+                        )
 
+    print(f"Recording audio output from speaker : {default_speakers["name"]}")
+    print(f"Sample rate : {default_speakers["defaultSampleRate"]}")
+    print(f"Buffer duration : {BUFFER} seconds \n")
     print("Recording buffer by buffer... Press Enter to stop.")
 
     # Record loop
     while recording:
+        # !!!
+        # This method records data from an audio output to buffers of a specified length (duration * samplerate)
+        # The buffer's timer counts only the time when audio is played
+        # !!!
+         
         # Record data in buffers
         buffer_frames = []
+        print(1)
         for _ in range(0, int(RATE / CHUNK * BUFFER)):
+            # print(2)
             data = stream.read(CHUNK)
+            # print(3)
             buffer_frames.append(data)
 
+        print(4)
         # Save buffer to file
         outputFilename = outputFilePath + str(bufferId) + ".wav"
         with wave.open(outputFilename, 'wb') as wf:
