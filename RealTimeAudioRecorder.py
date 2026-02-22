@@ -76,14 +76,10 @@ def record_audio():
          
         # Record data in buffers
         buffer_frames = []
-        print(1)
         for _ in range(0, int(RATE / CHUNK * BUFFER)):
-            # print(2)
             data = stream.read(CHUNK)
-            # print(3)
             buffer_frames.append(data)
 
-        print(4)
         # Save buffer to file
         outputFilename = outputFilePath + str(bufferId) + ".wav"
         with wave.open(outputFilename, 'wb') as wf:
@@ -101,6 +97,8 @@ def record_audio():
     stream.stop_stream()
     stream.close()
     audio.terminate()
+
+print("\n----------RealTimeAudioRecorder---------\n")
 
 # Thread to handle recording
 recording_thread = threading.Thread(target=record_audio)

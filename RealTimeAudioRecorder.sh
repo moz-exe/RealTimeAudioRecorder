@@ -45,32 +45,37 @@ install_python_pip() {
 }
 
 # Fonction pour installer pyaudio
-install_pyaudio() {
+install_pyaudiowpatch() {
     if [[ "$OS" == "Windows"* ]]; then
         powershell -Command "
-            if (-not (python -c 'import pyaudio' 2>\$null)) {
-                Write-Host 'Installation de pyaudio...'
-                python -m pip install pyaudio
+            if (-not (python -c 'import PyAudioWPatch' 2>\$null)) {
+                Write-Host 'Installation de PyAudioWPatch...'
+                python -m pip install PyAudioWPatch
             }
         "
-    else
-        if ! python3 -c "import pyaudio" 2>/dev/null; then
-            echo "Installation de pyaudio..."
-            if [[ "$OS" == "Linux"* ]]; then
-                sudo apt-get update && sudo apt-get install -y portaudio19-dev python3-pyaudio
-            elif [[ "$OS" == "Darwin"* ]]; then
-                brew install portaudio
-                pip3 install pyaudio
-            fi
-        fi
+    # else
+    #     if ! python3 -c "import pyaudio" 2>/dev/null; then
+    #         echo "Installation de pyaudio..."
+    #         if [[ "$OS" == "Linux"* ]]; then
+    #             sudo apt-get update && sudo apt-get install -y portaudio19-dev python3-pyaudio
+    #         elif [[ "$OS" == "Darwin"* ]]; then
+    #             brew install portaudio
+    #             pip3 install pyaudio
+    #         fi
+    #     fi
     fi
 }
+
+if [[ "$OS" != "Windows"* ]]; then
+    echo "Vous utilisez $OS, cet outil utilise la librairie PyAudioWPatch qui ne fonctionne que sur Windows"
+    exit
+fi
 
 # Vérification de Python et pip
 install_python_pip
 
 # Vérification de pyaudio
-install_pyaudio
+install_pyaudiowpatch
 
 # Vérification du fichier RealTimeAudioRecorder.py
 if [[ "$OS" == "Windows"* ]]; then
