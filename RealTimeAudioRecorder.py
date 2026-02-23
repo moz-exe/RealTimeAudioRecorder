@@ -4,10 +4,6 @@ import threading
 import sys
 import os.path
 
-# Problème d'installation de différentes lib
-# pb d'utilisation de pulsaudio
-# tester lib soundcard, picovoice, sounddevice & soundfile
-
 # Audio recording parameters
 FORMAT = pyaudio.paInt16 # 16-bit resolution
 CHANNELS = 2             # 2: Stereo, 1: Mono
