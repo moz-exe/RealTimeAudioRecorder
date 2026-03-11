@@ -10,14 +10,14 @@
 
 ## Presentation
 
-This tool records the computer's audio output and exports it buffer by buffer in .wav files in real time.  
+This tool records the computer's audio input and output and exports it buffer by buffer in .wav files in real time.  
 It uses the PyAudioWPatch 0.2.12.8 library which is a fork of the popular PyAudio library that allows you to use output devices in loopback mode.  
 Unfortunately, this library only works for Windows.  
 
 ## How to use
 
 Execute the script RealTimeAudioRecorder.sh  
-It will check and install the required libraries and execute the programm.  
+It will install all the required libraries into a python virtual environment and execute the programm.  
 
 ## Why
 
