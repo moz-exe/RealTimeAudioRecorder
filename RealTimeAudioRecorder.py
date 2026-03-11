@@ -4,7 +4,6 @@ import threading
 import numpy as np
 import os.path
 import time
-import ctypes
 
 # Audio recording parameters
 FORMAT = pyaudio.paInt16  # 16-bit resolution
